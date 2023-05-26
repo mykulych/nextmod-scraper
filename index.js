@@ -3,7 +3,7 @@ const errorsHandler = require("./utils/errors_handler");
 const headers = require("./utils/headers.json");
 const writeDataFile = require("./utils/writeDataFile");
 
-const filePath = "./files/data.json";
+const filePath = "./files/4.json";
 
 const BASE_URL = "https://www.oreillyauto.com/";
 
@@ -14,8 +14,10 @@ async function main() {
     //await makesHandler(1)
     //await modelsHandler(1)
     // await submodelsHandler(1)
+    console.log('Finished successfully!')
   } catch (error) {
     errorsHandler(error);
+    console.log('Finished with error!')
   }
 }
 
@@ -25,21 +27,30 @@ async function typesHandler() {
   const field = "description";
 
   // fetch data from api
-  const { data: types } = await axios.get(types_endpoint);
-
+  const { data: types } = await axios.get(types_endpoint, {headers});
+  console.log('types: ', types)
   // fetch prev file data
   const data = require(filePath);
 
-  for (let i = 0; i < types.length; i++) {
-    const type = types[i];
-    const typeName = type[field];
+  const type = types[4]
+  const typeName = type[field]
 
-    // write received data to file
+  // write received data to file
     data[type[field]] = {};
     writeDataFile(data, filePath);
 
     await yearsHandler({ type, typeName });
-  }
+
+  // for (let i = 4; i < types.length; i++) {
+  //   const type = types[i];
+  //   const typeName = type[field];
+
+  //   // write received data to file
+  //   data[type[field]] = {};
+  //   writeDataFile(data, filePath);
+
+  //   await yearsHandler({ type, typeName });
+  // }
 }
 
 async function yearsHandler({ type, typeName }) {
